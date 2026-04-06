@@ -1,0 +1,27 @@
+﻿<Window x:Class="AutoDrive.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="AutoDrive CRM" Height="720" Width="1280"
+        WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="220"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Боковое меню -->
+        <StackPanel Grid.Column="0" Background="#2C3E50">
+            <Button x:Name="BtnStudents" Content="КУРСАНТЫ" Click="BtnStudents_Click" 
+                    Height="50" Margin="10,5" Background="#34495E" Foreground="White" BorderThickness="0" FontWeight="Bold"/>
+            <Button x:Name="BtnFinance" Content="ФИНАНСЫ" Click="BtnFinance_Click" 
+                    Height="50" Margin="10,5" Background="#34495E" Foreground="White" BorderThickness="0" FontWeight="Bold"/>
+            <Button x:Name="BtnFleet" Content="АВТОПАРК" Click="BtnFleet_Click" 
+                    Height="50" Margin="10,5" Background="#34495E" Foreground="White" BorderThickness="0" FontWeight="Bold"/>
+            <Button x:Name="BtnSchedule" Content="РАСПИСАНИЕ" Click="BtnSchedule_Click" 
+                    Height="50" Margin="10,5" Background="#34495E" Foreground="White" BorderThickness="0" FontWeight="Bold"/>
+        </StackPanel>
+
+        <!-- Область для динамической загрузки модулей -->
+        <ContentControl x:Name="ContentArea" Grid.Column="1" Margin="15"/>
+    </Grid>
+</Window>

@@ -1,0 +1,8 @@
+﻿<UserControl x:Class="AutoDrive.Views.Students.StudentsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <TextBlock Text="Модуль &quot;Учёт курсантов&quot; (в разработке)" 
+                   FontSize="28" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Gray"/>
+    </Grid>
+</UserControl>
