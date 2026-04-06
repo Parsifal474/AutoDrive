@@ -30,7 +30,7 @@ namespace AutoDrive
         private void BtnFinance_Click(object sender, RoutedEventArgs e)
         {
             // Для модуля "Финансы" пока создаём через new, но позже тоже зарегистрируем
-            ContentArea.Content = new PaymentsView();
+            ContentArea.Content = _serviceProvider.GetRequiredService<PaymentsView>();
         }
 
         private void BtnFleet_Click(object sender, RoutedEventArgs e)

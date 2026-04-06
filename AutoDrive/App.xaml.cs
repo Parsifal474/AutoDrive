@@ -1,10 +1,11 @@
-﻿using System;
-using System.Windows;
-using AutoDrive.Services;
+﻿using AutoDrive.Services;
 using AutoDrive.ViewModels;
 using AutoDrive.Views;
+using AutoDrive.Views.Finance;
 using AutoDrive.Views.Students;
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Windows;
 
 namespace AutoDrive
 {
@@ -37,6 +38,11 @@ namespace AutoDrive
             services.AddTransient<StudentEditDialog>();
             // Остальные View (PaymentsView, VehiclesView и т.д.) пока без зависимостей, можно не регистрировать
             // или зарегистрировать как Transient, если позже понадобятся
+
+            services.AddSingleton<IMockPaymentService, MockPaymentService>();
+            services.AddTransient<PaymentsViewModel>();
+            services.AddTransient<PaymentsView>();
+            services.AddTransient<PaymentEditDialog>(); // если нужно
         }
     }
 }
