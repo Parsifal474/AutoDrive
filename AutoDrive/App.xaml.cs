@@ -2,6 +2,7 @@
 using AutoDrive.ViewModels;
 using AutoDrive.Views;
 using AutoDrive.Views.Finance;
+using AutoDrive.Views.Fleet;
 using AutoDrive.Views.Students;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -39,10 +40,19 @@ namespace AutoDrive
             // Остальные View (PaymentsView, VehiclesView и т.д.) пока без зависимостей, можно не регистрировать
             // или зарегистрировать как Transient, если позже понадобятся
 
+            // модуль финансы
             services.AddSingleton<IMockPaymentService, MockPaymentService>();
             services.AddTransient<PaymentsViewModel>();
             services.AddTransient<PaymentsView>();
             services.AddTransient<PaymentEditDialog>(); // если нужно
+
+            // модуль инструктор и автомобили
+            services.AddSingleton<IMockVehicleService, MockVehicleService>();
+            services.AddSingleton<IMockInstructorService, MockInstructorService>();
+            services.AddTransient<FleetViewModel>();
+            services.AddTransient<FleetView>();
+            services.AddTransient<VehicleEditDialog>();
+            services.AddTransient<InstructorEditDialog>();
         }
     }
 }

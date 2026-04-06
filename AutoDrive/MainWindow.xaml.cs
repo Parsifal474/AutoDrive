@@ -35,7 +35,7 @@ namespace AutoDrive
 
         private void BtnFleet_Click(object sender, RoutedEventArgs e)
         {
-            ContentArea.Content = new VehiclesView();
+            ContentArea.Content = _serviceProvider.GetRequiredService<FleetView>();
         }
 
         private void BtnSchedule_Click(object sender, RoutedEventArgs e)
