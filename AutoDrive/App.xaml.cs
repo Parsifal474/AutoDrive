@@ -3,6 +3,7 @@ using AutoDrive.ViewModels;
 using AutoDrive.Views;
 using AutoDrive.Views.Finance;
 using AutoDrive.Views.Fleet;
+using AutoDrive.Views.Schedule;
 using AutoDrive.Views.Students;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -53,6 +54,11 @@ namespace AutoDrive
             services.AddTransient<FleetView>();
             services.AddTransient<VehicleEditDialog>();
             services.AddTransient<InstructorEditDialog>();
+
+            //каледарь
+            services.AddSingleton<IMockLessonService, MockLessonService>();
+            services.AddTransient<MonthScheduleViewModel>();
+            services.AddTransient<MonthScheduleView>();
         }
     }
 }

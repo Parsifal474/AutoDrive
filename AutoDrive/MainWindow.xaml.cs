@@ -40,7 +40,7 @@ namespace AutoDrive
 
         private void BtnSchedule_Click(object sender, RoutedEventArgs e)
         {
-            ContentArea.Content = new ScheduleView();
+            ContentArea.Content = _serviceProvider.GetRequiredService<MonthScheduleView>();
         }
     }
 }

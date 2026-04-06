@@ -1,7 +1,10 @@
 ﻿<Application x:Class="AutoDrive.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:AutoDrive.Converters"
              Startup="Application_Startup">
     <Application.Resources>
+        <local:BoolToBrushConverter x:Key="BoolToBrushConverter"/>
+        <local:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     </Application.Resources>
 </Application>
