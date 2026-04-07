@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -16,6 +17,9 @@ namespace AutoDrive.ViewModels
         private ObservableCollection<Payment> _payments = new();
         private Payment? _selectedPayment;
         private string _searchText = string.Empty;
+
+        // Свойство для вкладки "Отчёты"
+        public ReportsViewModel ReportsViewModel { get; }
 
         public ObservableCollection<Payment> Payments
         {
@@ -48,10 +52,15 @@ namespace AutoDrive.ViewModels
         {
             _paymentService = paymentService;
             _studentService = studentService;
+
+            // Создаём экземпляр ReportsViewModel, передавая те же сервисы
+            ReportsViewModel = new ReportsViewModel(paymentService, studentService);
+
             LoadCommand = new RelayCommand(async _ => await LoadPayments());
             AddCommand = new RelayCommand(async _ => await AddPayment());
             EditCommand = new RelayCommand(async _ => await EditPayment(), _ => SelectedPayment != null);
             DeleteCommand = new RelayCommand(async _ => await DeletePayment(), _ => SelectedPayment != null);
+
             _ = LoadPayments();
         }
 
@@ -63,8 +72,8 @@ namespace AutoDrive.ViewModels
                 // Поиск по описанию или по фамилии курсанта (через Student)
                 var students = await _studentService.GetAllAsync();
                 var filtered = all.Where(p =>
-                    (p.Description?.Contains(SearchText, System.StringComparison.OrdinalIgnoreCase) == true) ||
-                    (students.FirstOrDefault(s => s.Id == p.StudentId)?.LastName.Contains(SearchText, System.StringComparison.OrdinalIgnoreCase) == true)
+                    (p.Description?.Contains(SearchText, StringComparison.OrdinalIgnoreCase) == true) ||
+                    (students.FirstOrDefault(s => s.Id == p.StudentId)?.LastName.Contains(SearchText, StringComparison.OrdinalIgnoreCase) == true)
                 ).ToList();
                 Payments = new ObservableCollection<Payment>(filtered);
             }
@@ -76,8 +85,9 @@ namespace AutoDrive.ViewModels
 
         private async Task AddPayment()
         {
-            var newPayment = new Payment { PaymentDate = System.DateTime.Now };
-            var dialog = new PaymentEditDialog(newPayment, await _studentService.GetAllAsync());
+            var newPayment = new Payment { PaymentDate = DateTime.Now };
+            var students = await _studentService.GetAllAsync();
+            var dialog = new PaymentEditDialog(newPayment, students);
             if (dialog.ShowDialog() == true)
             {
                 await _paymentService.CreateAsync(newPayment);
@@ -98,7 +108,8 @@ namespace AutoDrive.ViewModels
                 PaymentType = SelectedPayment.PaymentType,
                 IsInstallment = SelectedPayment.IsInstallment
             };
-            var dialog = new PaymentEditDialog(copy, await _studentService.GetAllAsync());
+            var students = await _studentService.GetAllAsync();
+            var dialog = new PaymentEditDialog(copy, students);
             if (dialog.ShowDialog() == true)
             {
                 await _paymentService.UpdateAsync(copy.Id, copy);

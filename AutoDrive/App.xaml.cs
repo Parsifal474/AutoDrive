@@ -62,6 +62,11 @@ namespace AutoDrive
 
             //pdf генератор
             services.AddSingleton<IPdfGeneratorService, PdfGeneratorService>();
+
+            services.AddSingleton<IMockStudentService, MockStudentService>();
+            services.AddSingleton<IMockPaymentService, MockPaymentService>();
+            services.AddTransient<PaymentsViewModel>();
+            services.AddTransient<PaymentsView>();
         }
     }
 }
