@@ -1,17 +1,21 @@
-﻿using System.Collections.ObjectModel;
+﻿using AutoDrive.Models;
+using AutoDrive.Services;
+using AutoDrive.ViewModels.Base;
+using AutoDrive.Views;
+using System;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using AutoDrive.Models;
-using AutoDrive.Services;
-using AutoDrive.ViewModels.Base;
-using AutoDrive.Views;   // для StudentEditDialog
 
 namespace AutoDrive.ViewModels
 {
     public class StudentsViewModel : ViewModelBase
     {
         private readonly IMockStudentService _studentService;
+        private readonly IPdfGeneratorService _pdfGeneratorService;
         private ObservableCollection<Student> _students = new();
         private Student? _selectedStudent;
         private string _searchText = string.Empty;
@@ -42,15 +46,21 @@ namespace AutoDrive.ViewModels
         public RelayCommand AddCommand { get; }
         public RelayCommand EditCommand { get; }
         public RelayCommand DeleteCommand { get; }
+        public RelayCommand ContractCommand { get; }      // договор
+        public RelayCommand CertificateCommand { get; }  // свидетельство
 
-        // Конструктор для DI (без параметров по умолчанию)
-        public StudentsViewModel(IMockStudentService studentService)
+        public StudentsViewModel(IMockStudentService studentService, IPdfGeneratorService pdfGeneratorService)
         {
             _studentService = studentService;
+            _pdfGeneratorService = pdfGeneratorService;
+
             LoadCommand = new RelayCommand(async _ => await LoadStudents());
             AddCommand = new RelayCommand(async _ => await AddStudent());
             EditCommand = new RelayCommand(async _ => await EditStudent(), _ => SelectedStudent != null);
             DeleteCommand = new RelayCommand(async _ => await DeleteStudent(), _ => SelectedStudent != null);
+            ContractCommand = new RelayCommand(async _ => await GenerateContract(), _ => SelectedStudent != null);
+            CertificateCommand = new RelayCommand(async _ => await GenerateCertificate(), _ => SelectedStudent != null);
+
             _ = LoadStudents();
         }
 
@@ -59,8 +69,8 @@ namespace AutoDrive.ViewModels
             var all = await _studentService.GetAllAsync();
             if (!string.IsNullOrWhiteSpace(SearchText))
             {
-                var filtered = all.Where(s => s.LastName.Contains(SearchText, System.StringComparison.OrdinalIgnoreCase) ||
-                                              s.FirstName.Contains(SearchText, System.StringComparison.OrdinalIgnoreCase) ||
+                var filtered = all.Where(s => s.LastName.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
+                                              s.FirstName.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
                                               s.Phone.Contains(SearchText)).ToList();
                 Students = new ObservableCollection<Student>(filtered);
             }
@@ -112,6 +122,32 @@ namespace AutoDrive.ViewModels
                 await _studentService.DeleteAsync(SelectedStudent.Id);
                 await LoadStudents();
             }
+        }
+
+        // Генерация договора
+        private async Task GenerateContract()
+        {
+            if (SelectedStudent == null) return;
+            // Здесь должна быть реальная сумма из базы данных или вычисленная
+            decimal totalAmount = 25000m; // пример: стоимость обучения
+            var pdfBytes = await _pdfGeneratorService.GenerateContractAsync(SelectedStudent, totalAmount);
+            SaveAndOpenPdf(pdfBytes, $"Договор_{SelectedStudent.LastName}_{SelectedStudent.FirstName}.pdf");
+        }
+
+        // Генерация свидетельства
+        private async Task GenerateCertificate()
+        {
+            if (SelectedStudent == null) return;
+            var pdfBytes = await _pdfGeneratorService.GenerateCertificateAsync(SelectedStudent);
+            SaveAndOpenPdf(pdfBytes, $"Свидетельство_{SelectedStudent.LastName}_{SelectedStudent.FirstName}.pdf");
+        }
+
+        private void SaveAndOpenPdf(byte[] pdfBytes, string fileName)
+        {
+            var tempFile = Path.Combine(Path.GetTempPath(), fileName);
+            File.WriteAllBytes(tempFile, pdfBytes);
+            // Открываем PDF в программе по умолчанию
+            Process.Start(new ProcessStartInfo(tempFile) { UseShellExecute = true });
         }
     }
 }

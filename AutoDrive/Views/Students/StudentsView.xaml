@@ -17,7 +17,9 @@
             <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" Width="250" Margin="0,0,10,0" Tag="Поиск..."/>
             <Button Content="Добавить" Command="{Binding AddCommand}" Margin="0,0,5,0" Padding="10,5"/>
             <Button Content="Изменить" Command="{Binding EditCommand}" Margin="0,0,5,0" Padding="10,5"/>
-            <Button Content="Удалить" Command="{Binding DeleteCommand}" Padding="10,5"/>
+            <Button Content="Удалить" Command="{Binding DeleteCommand}" Margin="0,0,5,0" Padding="10,5"/>
+            <Button Content="Договор" Command="{Binding ContractCommand}" Margin="0,0,5,0" Padding="10,5"/>
+            <Button Content="Свидетельство" Command="{Binding CertificateCommand}" Margin="0,0,5,0" Padding="10,5"/>
         </WrapPanel>
 
         <DataGrid Grid.Row="2" ItemsSource="{Binding Students}" SelectedItem="{Binding SelectedStudent}"

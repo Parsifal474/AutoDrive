@@ -59,6 +59,9 @@ namespace AutoDrive
             services.AddSingleton<IMockLessonService, MockLessonService>();
             services.AddTransient<MonthScheduleViewModel>();
             services.AddTransient<MonthScheduleView>();
+
+            //pdf генератор
+            services.AddSingleton<IPdfGeneratorService, PdfGeneratorService>();
         }
     }
 }
