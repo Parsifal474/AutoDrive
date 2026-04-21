@@ -11,6 +11,6 @@ namespace AutoDrive.Services
         Task<Lesson> CreateAsync(Lesson lesson);
         Task<Lesson?> UpdateAsync(int id, Lesson lesson);
         Task<bool> DeleteAsync(int id);
-        Task<bool> IsAvailableAsync(Lesson lesson); // проверка конфликтов
+        Task<bool> IsAvailableAsync(Lesson lesson);
     }
 }

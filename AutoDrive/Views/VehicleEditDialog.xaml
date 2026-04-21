@@ -1,9 +1,14 @@
 ﻿<Window x:Class="AutoDrive.Views.VehicleEditDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Автомобиль" Height="500" Width="450" WindowStartupLocation="CenterOwner">
+        xmlns:local="clr-namespace:AutoDrive.Converters"
+        Title="Автомобиль" Height="550" Width="500" WindowStartupLocation="CenterOwner">
+    <Window.Resources>
+        <local:BoolToVisibilityConverter x:Key="BoolToVisibility"/>
+    </Window.Resources>
     <Grid Margin="16">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -18,16 +23,68 @@
 
         <TextBlock Text="Данные автомобиля" FontSize="20" FontWeight="Bold" Margin="0,0,0,16"/>
 
-        <TextBox Grid.Row="1" Text="{Binding Brand}" Margin="0,5" Tag="Марка *"/>
-        <TextBox Grid.Row="2" Text="{Binding Model}" Margin="0,5" Tag="Модель *"/>
-        <TextBox Grid.Row="3" Text="{Binding LicensePlate}" Margin="0,5" Tag="Госномер *"/>
-        <TextBox Grid.Row="4" Text="{Binding Year}" Margin="0,5" Tag="Год выпуска"/>
-        <DatePicker Grid.Row="5" SelectedDate="{Binding InsuranceExpiry}" Margin="0,5" Tag="Срок ОСАГО/КАСКО"/>
-        <DatePicker Grid.Row="6" SelectedDate="{Binding InspectionExpiry}" Margin="0,5" Tag="Срок диагностической карты"/>
-        <DatePicker Grid.Row="7" SelectedDate="{Binding MaintenanceDue}" Margin="0,5" Tag="Дата следующего ТО"/>
-        <ComboBox Grid.Row="8" ItemsSource="{Binding Statuses}" SelectedItem="{Binding Status}" Margin="0,5" Tag="Статус"/>
-        <ComboBox Grid.Row="9" ItemsSource="{Binding Instructors}" DisplayMemberPath="LastName" 
-                  SelectedValuePath="Id" SelectedValue="{Binding InstructorId}" Margin="0,5" Tag="Закреплённый инструктор"/>
+        <!-- Марка -->
+        <Grid Grid.Row="1" Margin="0,5">
+            <TextBox x:Name="BrandBox" Text="{Binding Brand}"/>
+            <TextBlock Text="Марка *" IsHitTestVisible="False" Foreground="Gray" 
+                       VerticalAlignment="Center" Margin="5,0,0,0"
+                       Visibility="{Binding ElementName=BrandBox, Path=Text.IsEmpty, Converter={StaticResource BoolToVisibility}}"/>
+        </Grid>
+
+        <!-- Модель -->
+        <Grid Grid.Row="2" Margin="0,5">
+            <TextBox x:Name="ModelBox" Text="{Binding Model}"/>
+            <TextBlock Text="Модель *" IsHitTestVisible="False" Foreground="Gray" 
+                       VerticalAlignment="Center" Margin="5,0,0,0"
+                       Visibility="{Binding ElementName=ModelBox, Path=Text.IsEmpty, Converter={StaticResource BoolToVisibility}}"/>
+        </Grid>
+
+        <!-- Госномер -->
+        <Grid Grid.Row="3" Margin="0,5">
+            <TextBox x:Name="LicensePlateBox" Text="{Binding LicensePlate}"/>
+            <TextBlock Text="Госномер *" IsHitTestVisible="False" Foreground="Gray" 
+                       VerticalAlignment="Center" Margin="5,0,0,0"
+                       Visibility="{Binding ElementName=LicensePlateBox, Path=Text.IsEmpty, Converter={StaticResource BoolToVisibility}}"/>
+        </Grid>
+
+        <!-- Год выпуска -->
+        <Grid Grid.Row="4" Margin="0,5">
+            <TextBox x:Name="YearBox" Text="{Binding Year}"/>
+            <TextBlock Text="Год выпуска" IsHitTestVisible="False" Foreground="Gray" 
+                       VerticalAlignment="Center" Margin="5,0,0,0"
+                       Visibility="{Binding ElementName=YearBox, Path=Text.IsEmpty, Converter={StaticResource BoolToVisibility}}"/>
+        </Grid>
+
+        <!-- Срок ОСАГО/КАСКО -->
+        <StackPanel Grid.Row="5" Orientation="Horizontal" Margin="0,5">
+            <TextBlock Text="ОСАГО/КАСКО:" Width="120" VerticalAlignment="Center"/>
+            <DatePicker SelectedDate="{Binding InsuranceExpiry}" Width="200"/>
+        </StackPanel>
+
+        <!-- Срок диагностической карты -->
+        <StackPanel Grid.Row="6" Orientation="Horizontal" Margin="0,5">
+            <TextBlock Text="Диагностика:" Width="120" VerticalAlignment="Center"/>
+            <DatePicker SelectedDate="{Binding InspectionExpiry}" Width="200"/>
+        </StackPanel>
+
+        <!-- Дата следующего ТО -->
+        <StackPanel Grid.Row="7" Orientation="Horizontal" Margin="0,5">
+            <TextBlock Text="ТО до:" Width="120" VerticalAlignment="Center"/>
+            <DatePicker SelectedDate="{Binding MaintenanceDue}" Width="200"/>
+        </StackPanel>
+
+        <!-- Статус -->
+        <StackPanel Grid.Row="8" Orientation="Horizontal" Margin="0,5">
+            <TextBlock Text="Статус:" Width="120" VerticalAlignment="Center"/>
+            <ComboBox ItemsSource="{Binding Statuses}" SelectedItem="{Binding Status}" Width="200"/>
+        </StackPanel>
+
+        <!-- Закреплённый инструктор -->
+        <StackPanel Grid.Row="9" Orientation="Horizontal" Margin="0,5">
+            <TextBlock Text="Инструктор:" Width="120" VerticalAlignment="Center"/>
+            <ComboBox ItemsSource="{Binding Instructors}" DisplayMemberPath="LastName" 
+                      SelectedValuePath="Id" SelectedValue="{Binding InstructorId}" Width="200"/>
+        </StackPanel>
 
         <StackPanel Grid.Row="10" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
             <Button Content="Отмена" Click="CancelButton_Click" Width="80" Margin="0,0,10,0"/>

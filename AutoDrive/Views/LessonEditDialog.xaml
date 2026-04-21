@@ -1,7 +1,11 @@
 ﻿<Window x:Class="AutoDrive.Views.LessonEditDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Занятие" Height="450" Width="450" WindowStartupLocation="CenterOwner">
+        xmlns:local="clr-namespace:AutoDrive.Converters"
+        Title="Занятие" Height="500" Width="500" WindowStartupLocation="CenterOwner">
+    <Window.Resources>
+        <local:BoolToVisibilityConverter x:Key="BoolToVisibility"/>
+    </Window.Resources>
     <Grid Margin="16">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -10,26 +14,90 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+
         <TextBlock Text="Данные занятия" FontSize="20" FontWeight="Bold" Margin="0,0,0,16"/>
-        <ComboBox Grid.Row="1" ItemsSource="{Binding Students}" DisplayMemberPath="LastName" SelectedValuePath="Id"
-                  SelectedValue="{Binding StudentId}" Margin="0,5" Tag="Курсант *"/>
-        <ComboBox Grid.Row="2" ItemsSource="{Binding Instructors}" DisplayMemberPath="LastName" SelectedValuePath="Id"
-                  SelectedValue="{Binding InstructorId}" Margin="0,5" Tag="Инструктор *"/>
-        <ComboBox Grid.Row="3" ItemsSource="{Binding Vehicles}" DisplayMemberPath="LicensePlate" SelectedValuePath="Id"
-                  SelectedValue="{Binding VehicleId}" Margin="0,5" Tag="Автомобиль *"/>
-        <DatePicker Grid.Row="4" SelectedDate="{Binding StartTime}" Margin="0,5" Tag="Дата"/>
-        <StackPanel Grid.Row="5" Orientation="Horizontal">
-            <TextBox Text="{Binding StartTime.Hour}" Width="40" Margin="0,5,5,5" Tag="Час"/>
-            <TextBlock Text=":" VerticalAlignment="Center"/>
-            <TextBox Text="{Binding StartTime.Minute}" Width="40" Margin="5,5,5,5" Tag="Мин"/>
-            <TextBlock Text="–" Margin="10,0" VerticalAlignment="Center"/>
-            <TextBox Text="{Binding EndTime.Hour}" Width="40" Margin="5,5,5,5" Tag="Час кон."/>
-            <TextBlock Text=":" VerticalAlignment="Center"/>
-            <TextBox Text="{Binding EndTime.Minute}" Width="40" Margin="5,5,5,5" Tag="Мин кон."/>
+
+        <!-- Курсант -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,5">
+            <TextBlock Text="Курсант:" Width="80" VerticalAlignment="Center"/>
+            <ComboBox ItemsSource="{Binding Students}" DisplayMemberPath="LastName" SelectedValuePath="Id"
+                      SelectedValue="{Binding _lesson.StudentId}" Width="250"/>
         </StackPanel>
-        <TextBox Grid.Row="6" Text="{Binding Note}" Margin="0,5" Tag="Примечание" AcceptsReturn="True" Height="60"/>
+
+        <!-- Инструктор -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,5">
+            <TextBlock Text="Инструктор:" Width="80" VerticalAlignment="Center"/>
+            <ComboBox ItemsSource="{Binding Instructors}" DisplayMemberPath="LastName" SelectedValuePath="Id"
+                      SelectedValue="{Binding _lesson.InstructorId}" Width="250"/>
+        </StackPanel>
+
+        <!-- Автомобиль -->
+        <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,5">
+            <TextBlock Text="Автомобиль:" Width="80" VerticalAlignment="Center"/>
+            <ComboBox ItemsSource="{Binding Vehicles}" DisplayMemberPath="LicensePlate" SelectedValuePath="Id"
+                      SelectedValue="{Binding _lesson.VehicleId}" Width="250"/>
+        </StackPanel>
+
+        <!-- Дата -->
+        <StackPanel Grid.Row="4" Orientation="Horizontal" Margin="0,5">
+            <TextBlock Text="Дата:" Width="80" VerticalAlignment="Center"/>
+            <DatePicker SelectedDate="{Binding _lesson.StartTime}" Width="250"/>
+        </StackPanel>
+
+        <!-- Время начала и окончания с подсказками -->
+        <Grid Grid.Row="5" Margin="0,5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="80"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Время:" VerticalAlignment="Center" Grid.Column="0"/>
+            <Grid Grid.Column="1" Width="50">
+                <TextBox x:Name="StartHourBox" Text="{Binding StartHour, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBlock Text="час" IsHitTestVisible="False" Foreground="Gray" 
+                           Visibility="{Binding ElementName=StartHourBox, Path=Text.IsEmpty, Converter={StaticResource BoolToVisibility}}"
+                           Margin="2,0,0,0" VerticalAlignment="Center"/>
+            </Grid>
+            <TextBlock Text=":" Grid.Column="2" VerticalAlignment="Center" Margin="2,0"/>
+            <Grid Grid.Column="3" Width="50">
+                <TextBox x:Name="StartMinuteBox" Text="{Binding StartMinute, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBlock Text="мин" IsHitTestVisible="False" Foreground="Gray"
+                           Visibility="{Binding ElementName=StartMinuteBox, Path=Text.IsEmpty, Converter={StaticResource BoolToVisibility}}"
+                           Margin="2,0,0,0" VerticalAlignment="Center"/>
+            </Grid>
+            <TextBlock Text="–" Grid.Column="4" Margin="10,0" VerticalAlignment="Center"/>
+            <Grid Grid.Column="5" Width="50">
+                <TextBox x:Name="EndHourBox" Text="{Binding EndHour, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBlock Text="час" IsHitTestVisible="False" Foreground="Gray"
+                           Visibility="{Binding ElementName=EndHourBox, Path=Text.IsEmpty, Converter={StaticResource BoolToVisibility}}"
+                           Margin="2,0,0,0" VerticalAlignment="Center"/>
+            </Grid>
+            <TextBlock Text=":" Grid.Column="6" VerticalAlignment="Center" Margin="2,0"/>
+            <Grid Grid.Column="7" Width="50">
+                <TextBox x:Name="EndMinuteBox" Text="{Binding EndMinute, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBlock Text="мин" IsHitTestVisible="False" Foreground="Gray"
+                           Visibility="{Binding ElementName=EndMinuteBox, Path=Text.IsEmpty, Converter={StaticResource BoolToVisibility}}"
+                           Margin="2,0,0,0" VerticalAlignment="Center"/>
+            </Grid>
+        </Grid>
+
+        <!-- Примечание -->
+        <Grid Grid.Row="6" Margin="0,5">
+            <TextBox x:Name="NoteBox" Text="{Binding _lesson.Note}" AcceptsReturn="True" Height="60"/>
+            <TextBlock Text="Примечание" IsHitTestVisible="False" Foreground="Gray" 
+                       Visibility="{Binding ElementName=NoteBox, Path=Text.IsEmpty, Converter={StaticResource BoolToVisibility}}"
+                       Margin="5,5,0,0" VerticalAlignment="Top"/>
+        </Grid>
+
+        <!-- Кнопки -->
         <StackPanel Grid.Row="7" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
             <Button Content="Отмена" Click="CancelButton_Click" Width="80" Margin="0,0,10,0"/>
             <Button Content="Сохранить" Click="SaveButton_Click" Width="80"/>

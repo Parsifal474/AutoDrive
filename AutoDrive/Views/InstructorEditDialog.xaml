@@ -1,7 +1,11 @@
 ﻿<Window x:Class="AutoDrive.Views.InstructorEditDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:AutoDrive.Converters"
         Title="Инструктор" Height="450" Width="450" WindowStartupLocation="CenterOwner">
+    <Window.Resources>
+        <local:BoolToVisibilityConverter x:Key="BoolToVisibility"/>
+    </Window.Resources>
     <Grid Margin="16">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -16,12 +20,54 @@
 
         <TextBlock Text="Данные инструктора" FontSize="20" FontWeight="Bold" Margin="0,0,0,16"/>
 
-        <TextBox Grid.Row="1" Text="{Binding LastName}" Margin="0,5" Tag="Фамилия *"/>
-        <TextBox Grid.Row="2" Text="{Binding FirstName}" Margin="0,5" Tag="Имя *"/>
-        <TextBox Grid.Row="3" Text="{Binding MiddleName}" Margin="0,5" Tag="Отчество"/>
-        <TextBox Grid.Row="4" Text="{Binding Phone}" Margin="0,5" Tag="Телефон *"/>
-        <TextBox Grid.Row="5" Text="{Binding Email}" Margin="0,5" Tag="Email"/>
-        <TextBox Grid.Row="6" Text="{Binding HourlyRate}" Margin="0,5" Tag="Ставка за час (руб.)"/>
+        <!-- Фамилия -->
+        <Grid Grid.Row="1" Margin="0,5">
+            <TextBox x:Name="LastNameBox" Text="{Binding LastName}" />
+            <TextBlock Text="Фамилия *" IsHitTestVisible="False" 
+                       Foreground="Gray" VerticalAlignment="Center" Margin="5,0,0,0"
+                       Visibility="{Binding ElementName=LastNameBox, Path=Text.IsEmpty, Converter={StaticResource BoolToVisibility}}"/>
+        </Grid>
+
+        <!-- Имя -->
+        <Grid Grid.Row="2" Margin="0,5">
+            <TextBox x:Name="FirstNameBox" Text="{Binding FirstName}" />
+            <TextBlock Text="Имя *" IsHitTestVisible="False" 
+                       Foreground="Gray" VerticalAlignment="Center" Margin="5,0,0,0"
+                       Visibility="{Binding ElementName=FirstNameBox, Path=Text.IsEmpty, Converter={StaticResource BoolToVisibility}}"/>
+        </Grid>
+
+        <!-- Отчество -->
+        <Grid Grid.Row="3" Margin="0,5">
+            <TextBox x:Name="MiddleNameBox" Text="{Binding MiddleName}" />
+            <TextBlock Text="Отчество" IsHitTestVisible="False" 
+                       Foreground="Gray" VerticalAlignment="Center" Margin="5,0,0,0"
+                       Visibility="{Binding ElementName=MiddleNameBox, Path=Text.IsEmpty, Converter={StaticResource BoolToVisibility}}"/>
+        </Grid>
+
+        <!-- Телефон -->
+        <Grid Grid.Row="4" Margin="0,5">
+            <TextBox x:Name="PhoneBox" Text="{Binding Phone}" />
+            <TextBlock Text="Телефон *" IsHitTestVisible="False" 
+                       Foreground="Gray" VerticalAlignment="Center" Margin="5,0,0,0"
+                       Visibility="{Binding ElementName=PhoneBox, Path=Text.IsEmpty, Converter={StaticResource BoolToVisibility}}"/>
+        </Grid>
+
+        <!-- Email -->
+        <Grid Grid.Row="5" Margin="0,5">
+            <TextBox x:Name="EmailBox" Text="{Binding Email}" />
+            <TextBlock Text="Email" IsHitTestVisible="False" 
+                       Foreground="Gray" VerticalAlignment="Center" Margin="5,0,0,0"
+                       Visibility="{Binding ElementName=EmailBox, Path=Text.IsEmpty, Converter={StaticResource BoolToVisibility}}"/>
+        </Grid>
+
+        <!-- Ставка -->
+        <Grid Grid.Row="6" Margin="0,5">
+            <TextBox x:Name="HourlyRateBox" Text="{Binding HourlyRate}" />
+            <TextBlock Text="Ставка за час (руб.)" IsHitTestVisible="False" 
+                       Foreground="Gray" VerticalAlignment="Center" Margin="5,0,0,0"
+                       Visibility="{Binding ElementName=HourlyRateBox, Path=Text.IsEmpty, Converter={StaticResource BoolToVisibility}}"/>
+        </Grid>
+
         <CheckBox Grid.Row="7" Content="Активен" IsChecked="{Binding IsActive}" Margin="0,10"/>
 
         <StackPanel Grid.Row="8" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
